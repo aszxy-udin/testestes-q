@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAF Music - Masuk Grup</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark" style="background-image: url('https://files.catbox.moe/kganl6.jpg'); background-size: cover;">
+  <div class="container center blur-bg">
+    <h1>🎧 Selamat Datang di PAF Music</h1>
+    <p>Masuk grup dulu bos, baru bisa dengerin lagu-lagu warkop kita 😎</p>
+    <input type="text" id="grupLink" placeholder="Tempel Link Grup PAF-mu di sini..." />
+    <button onclick="verifikasiLink()">Masuk Grup</button>
+  </div>
+  <script>
+    function verifikasiLink() {
+      const link = document.getElementById("grupLink").value;
+      if (link.includes("https://chat.whatsapp.com/IEzqRDWKy4J4PU5k8BY2lo?mode=ac_t") || link.includes("discord.gg")) {
+        localStorage.setItem("paf_grup", "masuk");
+        window.location.href = "player.html";
+      } else {
+        alert("Link tidak valid! Harus link grup WA atau Discord.");
+      }
+    }
+  </script>
+</body>
+  </html>
