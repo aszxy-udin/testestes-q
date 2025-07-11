@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAF Music Player</title>
+  <link href="style.css" rel="stylesheet">
+</head>
+<body class="dark">
+  <div class="container">
+    <h1>🎶 Daftar Music Di Paf</h1>
+    <div id="music-info">
+      <img id="cover" src="" alt="cover">
+      <h2 id="title">Judul Lagu</h2>
+      <p id="artist">Artis</p>
+    </div>
+
+    <audio id="audio" controls></audio>
+
+    <div class="controls">
+      <button onclick="prevSong()">⏮️</button>
+      <button onclick="playPause()">▶️ / ⏸️</button>
+      <button onclick="nextSong()">⏭️</button> <button onclick="toggleRepeat()">🔁</button>
+    </div>
+  </div>
+
+  <script src="music.js"></script>
+  <script src="script.js"></script>
+</body>
+    </html>
